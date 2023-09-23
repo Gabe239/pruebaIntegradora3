@@ -34,7 +34,7 @@ export const loginUser = (req, res, next) => {
         return next(err);
       }
 
-      user.role = user.email === 'adminCoder@coder.com' ? 'admin' : 'user';
+      
 
       req.session.user = {
         first_name: user.first_name,
@@ -119,6 +119,29 @@ export const resetPassword = async (req, res) => {
   }
 }
 
+export const changeUserRoleToPremium = async (req, res) => {
+  try {
+      const userId = req.params.userId;
 
+      // Check if the user exists
+      const user = await User.findById(userId);
+
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Update the user's role to "premium"
+      user.role = 'premium';
+
+      // Save the updated user
+      await user.save();
+      
+
+      return res.status(200).json({ message: 'User role changed to premium' });
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 

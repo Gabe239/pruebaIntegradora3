@@ -37,6 +37,7 @@
     "passport-github": "^1.1.0",
     "passport-github2": "^0.1.12",
     "passport-local": "^1.0.0",
+    "sessions": "^0.0.2-7",
     "socket.io": "^4.6.2",
     "winston": "^3.10.0"
   }

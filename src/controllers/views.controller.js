@@ -71,7 +71,15 @@ export const addToCart = async (req, res) => {
   try {
     const productId = req.body.productId;
     const user = req.session.user;
-  
+
+    const isOwner = await cartManager.isUserCartOwner(user._id, user.cart._id);
+    const product = await productManager.getProductById(productId);
+
+    if (!product || !product.owner) {
+      // Si el producto no existe o no tiene propietario, muestra un error.
+      return res.status(404).json({ message: 'Product not found or has no owner' });
+    }
+
     if (!user.cart) {
       let userCart = await cartManager.createCartEmail(user.email);
       user.cart = userCart;
@@ -80,11 +88,16 @@ export const addToCart = async (req, res) => {
     else {
       const cartTest = await cartManager.getCartById(user.cart._id);
 
-      if (!cartTest) {
-        // Create a new cart if the cart doesn't exist
-        let userCart = await cartManager.createCartEmail(user.email);
-        user.cart = userCart;
-        await req.session.save();
+      if (!isOwner) {
+        return res.status(403).json({ error: 'No tienes permiso para modificar este carrito' });
+      }
+      else{
+        if (!cartTest) {
+          // Create a new cart if the cart doesn't exist
+          let userCart = await cartManager.createCartEmail(user.email);
+          user.cart = userCart;
+          await req.session.save();
+        }
       }
     }
 

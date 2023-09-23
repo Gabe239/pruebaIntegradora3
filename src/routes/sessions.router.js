@@ -6,7 +6,8 @@ import {
   githubAuth,
   githubAuthCallback,
   recoverMail,
-  resetPassword
+  resetPassword,
+  changeUserRoleToPremium
 } from '../controllers/sessions.controller.js';
 
 const router = express.Router();
@@ -18,4 +19,5 @@ router.get('/github', githubAuth);
 router.get('/githubcallback', githubAuthCallback);
 router.get('/send-recover-mail/:email', recoverMail);
 router.post('/reset-password/:token', resetPassword)
+router.post('/change-role/:userId', changeUserRoleToPremium);
 export default router;
